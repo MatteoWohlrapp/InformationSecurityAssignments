@@ -14,10 +14,8 @@ def read_query():
 
 
 def read_text():
-    text = ''
-    for line in sys.stdin:
-        text += line
-    return text
+    cipher = sys.stdin.read()
+    return cipher
 
 
 def shift(text, val):
