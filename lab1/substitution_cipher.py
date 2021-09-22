@@ -14,14 +14,15 @@ def read_query():
 
 
 def read_text():
-    cipher = sys.stdin.read()
-    return cipher
+    text = ''
+    for line in sys.stdin:
+        text += line
+    return text.rstrip()
 
 
 def shift(text, val):
     string = ''
     shift_val = val % ALPHA_LEN
-
     for c in text:
         if c.isalpha():
             if c.lower():
@@ -65,13 +66,17 @@ def map_dec(text, mapping):
 
 def apply_queries(queries, text):
     alphabet = 'abcdefghijklmnopqrstuvwxyz'
+    sign = 1
 
     for (method, val) in queries:
+        if val[0] == '-':
+            val = val.lstrip('-')
+            sign = -1
         if val.isdigit():
             if method == 'e':
-                alphabet = shift(alphabet, int(val))
+                alphabet = shift(alphabet, int(val) * sign)
             else:
-                alphabet = shift(alphabet, -int(val))
+                alphabet = shift(alphabet, -int(val) * sign)
         else:
             if method == 'e':
                 alphabet = map_enc(alphabet, val)
