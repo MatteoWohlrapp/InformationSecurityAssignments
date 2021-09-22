@@ -17,13 +17,14 @@ def read_text():
     text = ''
     for line in sys.stdin:
         text += line
-    return text.rstrip()
+
+    text = text.rstrip('\n')
+    return text
 
 
 def shift(text, val):
     string = ''
     shift_val = val % ALPHA_LEN
-    # print(val, shift_val)
     for c in text:
         if c.isalpha():
             if c.lower():
@@ -66,7 +67,6 @@ def map_dec(text, mapping):
 
 def apply_queries(queries, text):
     alphabet = 'abcdefghijklmnopqrstuvwxyz'
-
     for (method, val) in queries:
         if val.isalpha():
             if method == 'e':
