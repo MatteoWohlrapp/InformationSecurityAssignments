@@ -23,6 +23,7 @@ def read_text():
 def shift(text, val):
     string = ''
     shift_val = val % ALPHA_LEN
+    # print(val, shift_val)
     for c in text:
         if c.isalpha():
             if c.lower():
@@ -36,7 +37,6 @@ def shift(text, val):
 
 def map_enc(text, mapping):
     string = ''
-
     for c in text:
         if c.isalpha():
             if c.islower():
@@ -66,22 +66,18 @@ def map_dec(text, mapping):
 
 def apply_queries(queries, text):
     alphabet = 'abcdefghijklmnopqrstuvwxyz'
-    sign = 1
 
     for (method, val) in queries:
-        if val[0] == '-':
-            val = val.lstrip('-')
-            sign = -1
-        if val.isdigit():
-            if method == 'e':
-                alphabet = shift(alphabet, int(val) * sign)
-            else:
-                alphabet = shift(alphabet, -int(val) * sign)
-        else:
+        if val.isalpha():
             if method == 'e':
                 alphabet = map_enc(alphabet, val)
             else:
                 alphabet = map_dec(alphabet, val)
+        else:
+            if method == 'e':
+                alphabet = shift(alphabet, int(val))
+            else:
+                alphabet = shift(alphabet, -int(val))
 
     return map_enc(text, alphabet)
 
