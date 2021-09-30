@@ -2,8 +2,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
-public class Stream {
+public class RC4 {
 
     // function returning the key at index 0 and the input message at index 1
     private byte[][] readByteStream() throws IOException {
@@ -31,11 +32,14 @@ public class Stream {
         int inputIndex = 0;
 
         for (int i = 0; i < keyAndInput.length; i ++) {
-            if (keyAndInput[i] == -1)
-                separatingKey = false;
-            else if (separatingKey) {
-                key[keyIndex] = keyAndInput[i];
-                keyIndex++;
+
+            if (separatingKey) {
+                if (keyAndInput[i] == -1)
+                    separatingKey = false;
+                else {
+                    key[keyIndex] = keyAndInput[i];
+                    keyIndex++;
+                }
             } else {
                 input[inputIndex] = keyAndInput[i];
                 inputIndex++;
@@ -46,16 +50,11 @@ public class Stream {
     }
 
     private int findKeyLength(byte[] keyAndInput){
-        int keyLength = 0;
-
         for(int i = 0; i < keyAndInput.length; i++){
             if(keyAndInput[i] == -1)
-                return keyLength;
-            else
-                keyLength++;
+                return i;
         }
-
-        return keyLength;
+        return 0;
     }
 
     // function to write the bytes to system.out
@@ -69,32 +68,41 @@ public class Stream {
     // function to en/decrypt the input with the key
     private byte[] encryption(byte[] key, byte[] input){
 
-        byte[] K = new byte[256];
-    // Initialisation
-        byte[] S = new byte[256];
-        for(int i = 0; i < 256; i ++)
-            S[i] = (byte) i;
+        // Initialisation
+        short[] K = new short[256];
+        short[] S = new short[256];
+        for(int i = 0; i < 256; i ++) {
+            S[i] = (short) i;
+            K[i] = key[i % key.length];
+        }
+
         int j = 0;
         for(int i = 0; i < 256; i++){
             j = (j + S[i] + K[i]) % 256;
-            byte temp = S[i];
+            short temp = S[i];
             S[i] = S[j];
             S[j] = temp;
         }
         j = 0;
         int i = 0;
-        byte[] encryptedMessage = new byte[input.length];
 
+            // creating keystream
         for(int k = 0; k < input.length; k++){
-            i = (i+1) %256;
+            i = (i + 1) % 256;
             j = (j + S[i]) % 256;
-            byte temp = S[i];
+            short temp = S[i];
             S[i] = S[j];
             S[j] = temp;
             int t = (S[i] + S[j]) % 256;
+            K[k] = S[t];
+        }
+
+        // en/decrypting
+        byte[] encryptedMessage = new byte[input.length];
+        for(int k = 0; k < input.length; k++){
 
             int firstByte = input[k];
-            int secondByte = S[t];
+            int secondByte = K[k];
             int xorByte = firstByte ^ secondByte;
 
             encryptedMessage[k] = (byte) xorByte;
@@ -104,13 +112,13 @@ public class Stream {
     }
 
     public static void main(String[] args) throws IOException {
-        Stream stream = new Stream();
-        byte[][] keyAndInput = stream.readByteStream();
+        RC4 RC4 = new RC4();
+        byte[][] keyAndInput = RC4.readByteStream();
         byte[] key = keyAndInput[0];
         byte[] input = keyAndInput[1];
 
-        byte[] crypt = stream.encryption(key, input);
+        byte[] crypt = RC4.encryption(key, input);
 
-        stream.writeBytes(crypt);
+        RC4.writeBytes(crypt);
     }
 }
