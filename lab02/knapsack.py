@@ -1,5 +1,6 @@
 import sys
 
+
 def read_input():
     public_key = sys.stdin.readline().rstrip()
     nums = ""
@@ -7,9 +8,11 @@ def read_input():
         nums = nums + line + " "
     return public_key, nums
 
+
 def parse_input(data):
     data = data.split()
     return [int(x) for x in data]
+
 
 def summing_list(private_key):
     sums = [private_key[0]]
@@ -17,6 +20,7 @@ def summing_list(private_key):
         sum = sums[i - 1] + private_key[i]
         sums.append(sum)
     return sums
+
 
 def encrypt(key, n):
     sum = 0
@@ -28,16 +32,18 @@ def encrypt(key, n):
         i += 1
     return sum
 
+
 def decrypt(SK, m, n, c):
     m = (n + 1) // m
-    sum = c * m % n
+    knapsack_sum = c * m % n
     x = 0
     for sk in SK:
         x *= 2
-        if sum >= sk:
-            sum -= sk
+        if knapsack_sum >= sk:
+            knapsack_sum -= sk
             x += 1
     return x
+
 
 def main():
     type = sys.stdin.readline().rstrip()
@@ -56,6 +62,7 @@ def main():
         SK.reverse()
         for c in nums:
             print(decrypt(SK, m, n, c))
+
 
 if __name__ == '__main__':
     main()
