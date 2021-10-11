@@ -1,7 +1,7 @@
 from PIL import Image
 from itertools import product
 
-BYTES_LENGTH = 7
+BITS_LENGTH = 7
 
 def main():
     image = Image.open("Picture1.jpg")
@@ -14,10 +14,10 @@ def main():
         x.append(r%2)
         x.append(g%2)
         x.append(b%2)
-    for i in range(0, len(x), BYTES_LENGTH):
+    for i in range(0, len(x), BITS_LENGTH):
         n = 0
         count = 0
-        while count < BYTES_LENGTH and i+count < len(x):
+        while count < BITS_LENGTH and i+count < len(x):
             n *= 2
             n += x[i+count]
             count += 1
