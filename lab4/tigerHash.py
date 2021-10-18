@@ -66,10 +66,10 @@ def outer_rounds(W, a, b, c):
     a, b, c = inner_rounds(a, b, c, W, 5)
     # F7
     W = key_schedule(W)
-    a, b, c = inner_rounds(a, b, c, W, 7)
+    a, b, c = inner_rounds(c, a, b, W, 7)
     # F9
     W = key_schedule(W)
-    a, b, c = inner_rounds(a, b, c, W, 9)
+    a, b, c = inner_rounds(b, c, a, W, 9)
     # Finally
     a ^= aa
     b = (b - bb) & F
