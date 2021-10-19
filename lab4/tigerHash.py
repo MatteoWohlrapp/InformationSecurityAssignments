@@ -4,6 +4,7 @@ from operation import *
 
 UNIT = 64
 BIT = 8
+F = 0xFFFFFFFFFFFFFFFF
 
 def read_input():
     return sys.stdin.buffer.read()
@@ -12,7 +13,8 @@ def pad(text):
     padded_text = text + b'\x01'
     while len(padded_text) % UNIT != 56:
         padded_text += b'\x00'
-    return padded_text + (8*len(text)).to_bytes(8, 'big')
+    a =  padded_text + (8*(len(text))).to_bytes(8, 'big')
+    return a
 
 # w is 8 byte (64 bit)
 # w[i] is 1 byte (8 bit)
@@ -38,13 +40,13 @@ def key_schedule(w):
 # a, b, c, w are 8 byte
 def inner_round(a, b, c, w, m):
     c ^= w
-    c &= 0xffffffffffffffff
+    c &= F
     a -= s0[and3(c >> (0 * BIT))] ^ s1[and3(c >> (2 * BIT))] ^ s2[and3(c >> (4 * BIT))] ^ s3[and3(c >> (6 * BIT))]
     b += s3[and3(c >> (1 * BIT))] ^ s2[and3(c >> (3 * BIT))] ^ s1[and3(c >> (5 * BIT))] ^ s0[and3(c >> (7 * BIT))]
     b *= m
-    a &= 0xffffffffffffffff
-    b &= 0xffffffffffffffff
-    c &= 0xffffffffffffffff
+    a &= F
+    b &= F
+    c &= F
     return a, b, c
 
 def inner_rounds(a, b, c, W, m):
@@ -56,12 +58,10 @@ def inner_rounds(a, b, c, W, m):
     a, b, c = inner_round(c, a, b, W[5], m)
     a, b, c = inner_round(a, b, c, W[6], m)
     a, b, c = inner_round(b, c, a, W[7], m)
-    return c, a, b
+    return a, b, c
 
 def outer_rounds(W, a, b, c):
-    # a, b, c = 0x0123456789ABCDEF, 0xFEDCBA9876543210, 0xF096A5B4C3B2E187
     aa, bb, cc = a, b, c
-    F = 0xFFFFFFFFFFFFFFFF
     # F5
     a, b, c = inner_rounds(a, b, c, W, 5)
     # F7
@@ -90,7 +90,7 @@ def main():
     a,b,c = tiger_hash(X)
     hash = a.to_bytes(8, 'big') + b.to_bytes(8, 'big') + c.to_bytes(8, 'big')
     sys.stdout.buffer.write(hash)
-    #sys.stdout.buffer.write(padded_text)
+    # sys.stdout.buffer.write(padded_text)
 
 if __name__ == '__main__':
     main()
