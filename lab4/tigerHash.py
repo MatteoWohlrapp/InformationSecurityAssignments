@@ -4,8 +4,11 @@ from operation import *
 
 UNIT = 64
 BIT = 8
+<<<<<<< HEAD
 F = 0xFFFFFFFFFFFFFFFF
 f = 0xFF
+=======
+>>>>>>> 8915b805814d2da1b9b4aeab7647ef0e5f538866
 
 
 def read_input():
@@ -16,7 +19,11 @@ def pad(text):
     padded_text = text + b'\x01'
     while len(padded_text) % UNIT != 56:
         padded_text += b'\x00'
+<<<<<<< HEAD
     a = padded_text + (len(text) * 8).to_bytes(8, 'little')
+=======
+    a =  padded_text + (8*(len(text))).to_bytes(8, 'little')
+>>>>>>> 8915b805814d2da1b9b4aeab7647ef0e5f538866
     return a
 
 
@@ -44,6 +51,7 @@ def key_schedule(w):
 
 # a, b, c, w are 8 byte
 def inner_round(a, b, c, w, m):
+    F = 0xFFFFFFFFFFFFFFFF
     c ^= w
     c &= F
     a -= (((s0[and3(c >> (0 * BIT))] ^ s1[and3(c >> (2 * BIT))])&F ^ s2[and3(c >> (4 * BIT))])&F ^ s3[and3(c >> (6 * BIT))])&F
@@ -67,6 +75,7 @@ def inner_rounds(a, b, c, W, m):
 
 
 def outer_rounds(W, a, b, c):
+    F = 0xFFFFFFFFFFFFFFFF
     aa, bb, cc = a, b, c
     # F5
     a, b, c = inner_rounds(a, b, c, W, 5)
@@ -100,7 +109,11 @@ def main():
     a, b, c = tiger_hash(X)
     hash = a.to_bytes(8, 'little') + b.to_bytes(8, 'little') + c.to_bytes(8, 'little')
     sys.stdout.buffer.write(hash)
+<<<<<<< HEAD
 
+=======
+    #sys.stdout.buffer.write(padded_text)
+>>>>>>> 8915b805814d2da1b9b4aeab7647ef0e5f538866
 
 if __name__ == '__main__':
     main()
