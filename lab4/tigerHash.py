@@ -4,11 +4,8 @@ from operation import *
 
 UNIT = 64
 BIT = 8
-<<<<<<< HEAD
 F = 0xFFFFFFFFFFFFFFFF
 f = 0xFF
-=======
->>>>>>> 8915b805814d2da1b9b4aeab7647ef0e5f538866
 
 
 def read_input():
@@ -19,11 +16,7 @@ def pad(text):
     padded_text = text + b'\x01'
     while len(padded_text) % UNIT != 56:
         padded_text += b'\x00'
-<<<<<<< HEAD
     a = padded_text + (len(text) * 8).to_bytes(8, 'little')
-=======
-    a =  padded_text + (8*(len(text))).to_bytes(8, 'little')
->>>>>>> 8915b805814d2da1b9b4aeab7647ef0e5f538866
     return a
 
 
@@ -109,11 +102,7 @@ def main():
     a, b, c = tiger_hash(X)
     hash = a.to_bytes(8, 'little') + b.to_bytes(8, 'little') + c.to_bytes(8, 'little')
     sys.stdout.buffer.write(hash)
-<<<<<<< HEAD
 
-=======
-    #sys.stdout.buffer.write(padded_text)
->>>>>>> 8915b805814d2da1b9b4aeab7647ef0e5f538866
 
 if __name__ == '__main__':
     main()
